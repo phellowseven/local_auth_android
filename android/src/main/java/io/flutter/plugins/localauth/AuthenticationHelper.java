@@ -10,6 +10,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -75,11 +76,15 @@ class AuthenticationHelper extends BiometricPrompt.AuthenticationCallback
             .setSubtitle(strings.getBiometricHint())
             .setConfirmationRequired(options.getSensitiveTransaction());
 
-    /* int allowedAuthenticators =
-         BiometricManager.Authenticators.BIOMETRIC_WEAK
-             | BiometricManager.Authenticators.BIOMETRIC_STRONG; */
+    int allowedAuthenticators;
 
-    int allowedAuthenticators = BiometricManager.Authenticators.BIOMETRIC_STRONG;
+    if (Build.VERSION.SDK_INT < 30) {
+      allowedAuthenticators =
+              BiometricManager.Authenticators.BIOMETRIC_WEAK
+                      | BiometricManager.Authenticators.BIOMETRIC_STRONG;
+    }else {
+      allowedAuthenticators = BiometricManager.Authenticators.BIOMETRIC_STRONG;
+    }
 
     if (allowCredentials) {
       allowedAuthenticators |= BiometricManager.Authenticators.DEVICE_CREDENTIAL;
